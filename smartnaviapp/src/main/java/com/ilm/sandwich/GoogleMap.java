@@ -62,12 +62,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ilm.sandwich.fragments.RatingFragment;
 import com.ilm.sandwich.fragments.TutorialFragment;
@@ -1005,60 +999,8 @@ public class GoogleMap extends AppCompatActivity implements Locationer.onLocatio
             case android.R.id.home:
                 finish();
                 return (true);
-            case R.id.menu_search:
-                autoCompleteSearch();
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void autoCompleteSearch() {
-        //Initialize Places API
-        if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), Config.PLACES_SDK_API_KEY);
-        }
-        // Set the fields to specify which types of place data to return.
-        List<Place.Field> fields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.NAME);
-        //Define Reactangular Search Box for 3km
-        double lowerLeftLatitude;
-        double lowerLeftLongitude;
-        double upperRightLatitude;
-        double upperRightLongitude;
-
-        lowerLeftLatitude = Core.startLat - 0.03;
-        upperRightLatitude = Core.startLat + 0.03;
-
-        lowerLeftLongitude = Core.startLon - 0.04;
-        upperRightLongitude = Core.startLon + 0.04;
-
-        //SoutWest , NothEast
-        RectangularBounds bounds = RectangularBounds.newInstance(
-                new LatLng(lowerLeftLatitude, lowerLeftLongitude),
-                new LatLng(upperRightLatitude, upperRightLongitude));
-        Log.i("AutoComplete Bounds", "SouthWest: " + bounds.getSouthwest().latitude + " " + bounds.getSouthwest().longitude + "  " + " NorthEast: " + bounds.getNortheast().latitude + " " + bounds.getNortheast().longitude);
-        // Start the autocomplete intent.
-        Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.OVERLAY, fields).setLocationBias(bounds)
-                .build(this);
-
-        startActivityForResult(intent, 6767);
-    }
-
-    @SuppressLint("MissingSuperCall")
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 6767) {
-            if (resultCode == RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i("SmartNavi Autocomplete", "Place: " + place.getName() + ", " + place.getLatLng());
-                destLatLng = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
-                setDestPosition(destLatLng);
-                new routeTask().execute();
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i("SmartNavi Autocomplete", status.getStatusMessage());
-                Toast.makeText(this, getApplicationContext().getResources().getString(R.string.tx_103), Toast.LENGTH_LONG).show();
-            }
         }
     }
 

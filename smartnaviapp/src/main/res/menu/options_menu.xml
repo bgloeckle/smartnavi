@@ -2,12 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_search"
-        android:icon="@drawable/ic_menu_search_holo_dark"
-        android:orderInCategory="0"
-        android:title="@string/tx_03"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/menu_bgservice"
         android:title="@string/tx_64"
         app:showAsAction="never|withText" />
