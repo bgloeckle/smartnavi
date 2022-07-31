@@ -7,3 +7,4 @@ local.properties
 build
 fabric.properties
 Config.java
+secret.properties

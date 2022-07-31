@@ -22,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ilm.sandwich.sensors.Core;
 import com.ilm.sandwich.tools.Config;
 import com.ilm.sandwich.tools.ForegroundService;
@@ -38,7 +37,6 @@ public class BackgroundService extends AppCompatActivity {
     public static double sGeoLon;
     public static int steps = 0;
     static Location loc;
-    private FirebaseAnalytics mFirebaseAnalytics;
     static String mocLocationProvider;
     static LocationManager geoLocationManager;
     Button serviceButton;
@@ -118,9 +116,6 @@ public class BackgroundService extends AppCompatActivity {
         getSupportActionBar().setTitle(getResources().getString(R.string.tx_64));
         geoLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
         //restart Sensors
         try {
             GoogleMap.listHandler.sendEmptyMessage(10);
@@ -182,8 +177,6 @@ public class BackgroundService extends AppCompatActivity {
             serviceButton.setText(getApplicationContext().getResources().getString(R.string.tx_69));
             Config.backgroundServiceActive = true;
 
-            mFirebaseAnalytics.logEvent("BackgroundService_Start_Success", null);
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Intent intent = new Intent(this, ForegroundService.class);
                 intent.setAction(ForegroundService.ACTION_START_FOREGROUND_SERVICE);
@@ -228,7 +221,6 @@ public class BackgroundService extends AppCompatActivity {
             int devSettingsEnabled = Settings.Secure.getInt(this.getContentResolver(),
                     Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
             if (devSettingsEnabled == 1) {
-                mFirebaseAnalytics.logEvent("BackgroundService_Start_Err_DevEnabled", null);
                 final Dialog dialog1 = new Dialog(BackgroundService.this);
                 dialog1.setContentView(R.layout.dialog1);
                 dialog1.setTitle(getApplicationContext().getResources().getString(R.string.tx_44));
@@ -254,7 +246,6 @@ public class BackgroundService extends AppCompatActivity {
                     }
                 });
             } else {
-                mFirebaseAnalytics.logEvent("BackgroundService_Start_Err_DevDisabled", null);
                 final Dialog dialog2 = new Dialog(BackgroundService.this);
                 dialog2.setContentView(R.layout.dialog2);
                 dialog2.setTitle(getApplicationContext().getResources().getString(R.string.tx_104));
@@ -292,7 +283,6 @@ public class BackgroundService extends AppCompatActivity {
             stopService(serviceIntent);
         }
         //stop the Handlers who are responsible for restarting the sensor-listeners
-        mFirebaseAnalytics.logEvent("BackgroundService_Stop", null);
         //Stop sensors from beeing reactivated, 9 is for reactivating every 5 sec
         GoogleMap.listHandler.removeMessages(10);
 

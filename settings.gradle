@@ -1,1 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven { url "https://maven.google.com/" }
+    }
+}
+
 include ':smartnaviapp'

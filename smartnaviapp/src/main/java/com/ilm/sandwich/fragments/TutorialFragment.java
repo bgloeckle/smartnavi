@@ -21,8 +21,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.ilm.sandwich.BuildConfig;
 import com.ilm.sandwich.R;
 import com.ilm.sandwich.sensors.Core;
@@ -41,7 +39,6 @@ public class TutorialFragment extends Fragment {
     private View welcomeView;
     private boolean metricUnits = true;
     private View fragmentView;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     public TutorialFragment() {
     }
@@ -50,10 +47,6 @@ public class TutorialFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         fragmentView = view;
-
-        // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
-        mFirebaseAnalytics.logEvent("Tutorial_Start", null);
 
         startTutorial(view);
     }
@@ -89,32 +82,20 @@ public class TutorialFragment extends Fragment {
 
     private void startTutorial(View view) {
         //Remote Config for AB Testing for Tutorial Wording
-        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        boolean showTutorialPage1 = mFirebaseRemoteConfig.getBoolean("tutorial_page1_shown");
-        Log.i("Tutorial AB Test", "showTutorialPage1 = " + showTutorialPage1);
-        if (showTutorialPage1) {
             //AB TEst about hiding the first page, proceed normally and show page 1
             welcomeView = view.findViewById(R.id.welcomeView);
             welcomeView.setVisibility(View.VISIBLE);
-
-            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, null);
 
             Button welcomeButton = view.findViewById(R.id.welcomeButton);
             welcomeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mFirebaseAnalytics.logEvent("Tutorial_Button1_pressed", null);
                     welcomeView.setVisibility(View.INVISIBLE);
                     tutorialOverlay = fragmentView.findViewById(R.id.tutorialOverlay);
                     tutorialOverlay.setVisibility(View.VISIBLE);
                 }
             });
 
-        } else {
-            //AB TEst with hiding the first page, just show page 2
-            tutorialOverlay = fragmentView.findViewById(R.id.tutorialOverlay);
-            tutorialOverlay.setVisibility(View.VISIBLE);
-        }
 
 
         SharedPreferences settings = this.getActivity().getSharedPreferences(this.getActivity().getPackageName() + "_preferences", Context.MODE_PRIVATE);
@@ -169,7 +150,6 @@ public class TutorialFragment extends Fragment {
             public void onClick(View v) {
 
 
-                mFirebaseAnalytics.logEvent("Tutorial_Button2_pressed", null);
                 boolean tutorialDone = false;
                 final EditText heightField = fragmentView.findViewById(R.id.tutorialEditText);
                 int op = heightField.length();
@@ -221,7 +201,6 @@ public class TutorialFragment extends Fragment {
 
                 if (tutorialDone) {
                     // TutorialFragment finished
-                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_COMPLETE, null);
                     if (mListener != null) {
                         mListener.onTutorialFinished();
                     }
@@ -272,33 +251,6 @@ public class TutorialFragment extends Fragment {
             }
         });
 
-        //If remoteConfig String is NOT EMPTY, then use it.
-        //Page1
-        if (!mFirebaseRemoteConfig.getString("step1_text1").equalsIgnoreCase("")) {
-            TextView s1t1 = view.findViewById(R.id.welcomeNumber1Text);
-            s1t1.setText(mFirebaseRemoteConfig.getString("step1_text1"));
-        }
-        if (!mFirebaseRemoteConfig.getString("step1_text2").equalsIgnoreCase("")) {
-            TextView s1t1 = view.findViewById(R.id.welcomeNumber2TextBarText);
-            s1t1.setText(mFirebaseRemoteConfig.getString("step1_text2"));
-        }
-        if (!mFirebaseRemoteConfig.getString("step1_text3").equalsIgnoreCase("")) {
-            TextView s1t1 = view.findViewById(R.id.welcomeNumber4Text);
-            s1t1.setText(mFirebaseRemoteConfig.getString("step1_text3"));
-        }
-        //Page 2
-        if (!mFirebaseRemoteConfig.getString("step2_text1").equalsIgnoreCase("")) {
-            TextView s1t1 = view.findViewById(R.id.tutorialNumber1Text);
-            s1t1.setText(mFirebaseRemoteConfig.getString("step2_text1"));
-        }
-        if (!mFirebaseRemoteConfig.getString("step2_text2").equalsIgnoreCase("")) {
-            TextView s1t1 = view.findViewById(R.id.tutorialNumber2TextBarText);
-            s1t1.setText(mFirebaseRemoteConfig.getString("step2_text2"));
-        }
-        if (!mFirebaseRemoteConfig.getString("step2_text3").equalsIgnoreCase("")) {
-            TextView s1t1 = view.findViewById(R.id.tutorialNumber4Text);
-            s1t1.setText(mFirebaseRemoteConfig.getString("step2_text3"));
-        }
     }
 
     public interface onTutorialFinishedListener {

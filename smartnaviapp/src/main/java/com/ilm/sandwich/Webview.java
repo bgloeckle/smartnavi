@@ -8,20 +8,13 @@ import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 public class Webview extends AppCompatActivity {
-
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         getSupportActionBar().setTitle(getResources().getString(R.string.tx_90));
         WebView webview = new WebView(this);

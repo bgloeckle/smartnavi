@@ -30,7 +30,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ilm.sandwich.sensors.Core;
 import com.ilm.sandwich.tools.Config;
 
@@ -52,7 +51,6 @@ public class Settings extends AppCompatActivity implements OnEditorActionListene
     private boolean metricUnits = true;
     private LocationManager mLocationManager;
     private SubMenu subMenu1;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +62,6 @@ public class Settings extends AppCompatActivity implements OnEditorActionListene
             e.printStackTrace();
         }
         setContentView(R.layout.activity_settings);
-
-        // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         SharedPreferences settings = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
 
@@ -166,7 +161,6 @@ public class Settings extends AppCompatActivity implements OnEditorActionListene
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 new writeSettings("gpstimer", seekBar.getProgress()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                mFirebaseAnalytics.logEvent("Settings_Changed_Autocorrect_to_" + seekBar.getProgress(), null);
                 // start Autocorrect after 3sek
                 // because after this time the activity_settings are surely updated correctly
                 try {
@@ -205,14 +199,12 @@ public class Settings extends AppCompatActivity implements OnEditorActionListene
                         float totalInch = 12 * feet + inch;
                         Core.stepLength = (float) (totalInch * 2.54 / 222);
                         new writeSettings("step_length", stepLengthString).execute();
-                        mFirebaseAnalytics.logEvent("Settings_Changed_Bodyheight", null);
                     } else {
                         stepLengthString = stepLengthString.replace(",", ".");
                         float number = Float.valueOf(stepLengthString);
                         String numberString = df.format(number);
                         Core.stepLength = (number / 222);
                         new writeSettings("step_length", numberString).execute();
-                        mFirebaseAnalytics.logEvent("Settings_Changed_Bodyheight", null);
                     }
                     // close Keyboard after pressing the button
                     InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -330,7 +322,6 @@ public class Settings extends AppCompatActivity implements OnEditorActionListene
         } else if (buttonView.getId() == R.id.checkBoxVibration) {
             key = "vibration";
         }
-        mFirebaseAnalytics.logEvent("Settings_" + key + "_changed_to_" + isChecked, null);
         new writeSettings(key, isChecked).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 

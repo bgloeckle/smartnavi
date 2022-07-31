@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 
 /**
  * @author Christian Henke
@@ -19,16 +17,11 @@ import com.google.firebase.analytics.FirebaseAnalytics;
  */
 public class Info extends AppCompatActivity {
 
-    private FirebaseAnalytics mFirebaseAnalytics;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.tx_65));
-
-        // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         TextView versionNameText = findViewById(R.id.versionName);
         PackageInfo pInfo;

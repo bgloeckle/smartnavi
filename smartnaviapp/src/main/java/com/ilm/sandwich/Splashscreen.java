@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 
 /**
@@ -22,14 +21,10 @@ public class Splashscreen extends Activity {
 
     public static final boolean PLAYSTORE_VERSION = true; //Used to differ between free and playStoreVersion
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1972;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
         //Remove title bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_splashscreen);
